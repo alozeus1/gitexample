@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
    end 
  end
 
-1. Install and configure Docker on Ubuntu 18.04 
+1. Here we will Install and configure Docker on Ubuntu 18.04 
 		a. Uninstall old versions
 		sudo apt-get remove docker docker-engine docker.io containerd runc
 		b. Install docker engine
@@ -34,6 +34,8 @@ Vagrant.configure("2") do |config|
 		
 		# Finally, install Docker
 		sudo apt install docker-ce -y
+
+2. Lets check that docker is installed
 sudo systemctl status docker
 
  
