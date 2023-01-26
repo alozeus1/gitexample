@@ -1,0 +1,108 @@
+Vagrant.configure("2") do |config| 
+
+  config.vm.define "jenkins" do |jenkins3|  
+    jenkins3.vm.box = "generic/ubuntu2010"   
+    jenkins3.vm.hostname = "jenkinshost" 
+    jenkins3.vm.network "private_network", ip: "192.168.56.200"   
+     
+     jenkins3.vm.provider :virtualbox do |v| 
+       v.customize ["modifyvm", :id, "--memory", 10000] 
+       v.customize ["modifyvm", :id, "--name", "jenkins3"] 
+       v.customize ["modifyvm", :id, "--cpus", "4"] 
+     end 
+   end 
+ end
+
+1. Install and configure Docker on Ubuntu 18.04 
+		a. Uninstall old versions
+		sudo apt-get remove docker docker-engine docker.io containerd runc
+		b. Install docker engine
+		# Update your existing list of packages
+		sudo apt update
+		
+		# install a few prerequisite packages which let apt use packages over HTTPS  
+		sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+		
+		# Add the GPG key for the official Docker repository to your system
+		curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+		
+		# Add the Docker repository to APT sources
+		sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+		
+		# Make sure you are about to install from the Docker repo instead of the default Ubuntu repo
+		apt-cache policy docker-ce
+		
+		# Finally, install Docker
+		sudo apt install docker-ce -y
+sudo systemctl status docker
+
+ 
+Install Java JDK
+
+sudo apt install default-jdk -y
+
+Install Jenkins
+From Paul Simo to Everyone 07:53 PM
+Step 2 — Start Jenkins
+	
+	sudo systemctl start jenkins
+	sudo systemctl status jenkins
+	
+	Step 3 — Opening the Firewall
+	
+	sudo ufw allow 8080
+	sudo ufw status
+	
+	Note: If the firewall is inactive, the following commands will allow OpenSSH and enable the firewall:
+	
+	sudo ufw allow OpenSSH
+	sudo ufw enable
+	
+	Step 4 — Setting Up Jenkins
+	
+	To set up your installation, visit Jenkins on its default port, 8080, using your server domain name or IP address: http://your_server_ip_or_domain:8080
+	
+	Step 5 - Set permissions
+	
+	sudo usermod -aG docker jenkins
+	sudo systemctl restart docker.service
+sudo echo "jenkins   ALL=(ALL)   NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jenkins
+4. Configure Kubernetes cluster using kops in AWS
+
+	Step 1 - Install Dependent software on the Ubuntu machine
+	
+	  sudo apt install wget -y  #Install wget if not installed
+ sudo wget https://github.com/kubernetes/kops/releases/download/v1.22.0/kops-linux-amd64
+ sudo chmod +x kops-linux-amd64
+ sudo mv kops-linux-amd64 /usr/local/bin/kops
+	
+	Step 2 — Install AWS CLI
+		  
+	 sudo apt install unzip -y
+	 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+	 unzip awscliv2.zip
+	 sudo ./aws/install
+
+From Paul Simo to Everyone 07:55 PM
+Step 3 — Install kubectl
+		
+	 sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+	 sudo chmod +x ./kubectl
+	 sudo mv ./kubectl /usr/local/bin/kubectl
+
+Step 4 - Assign role on 
+Step 5 - Create an S3 bucket to store the KOPS cluster information
+
+	aws s3 mb s3://k8syval  # Key value store for etcd(database)
+aws s3 ls
+	
+	Expose environment variable:
+	# Add env variables in bashrc
+vi .bashrc
+	
+	# Give Unique Name And S3 Bucket which you created.
+export NAME=yvalcorp.k8s.local  # cluster name
+export KOPS_STATE_STORE=s3://k8svaly
+	source .bashrc
+Step 6 - Create an SSH key
+	ssh-keygen
